@@ -1,0 +1,4 @@
+#!/bin/bash -xe
+
+docker run --rm -t -i -p 443:443 -v /docker/letsencrypt/etc/letsencrypt:/etc/letsencrypt gzm55/certbot renew
+

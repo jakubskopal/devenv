@@ -1,0 +1,10 @@
+jenkins/var/jenkins_home/*
+!jenkins/var/jenkins_home/.gitkeep
+letsencrypt/etc/letsencrypt/*
+!letsencrypt/etc/letsencrypt/.gitkeep
+portainer/data/*
+!portainer/data/.gitkeep
+postgres/var/lib/postgresql/*
+!postgres/var/lib/postgresql/.gitkeep
+nginx/etc/nginx/conf.d/main.conf
+

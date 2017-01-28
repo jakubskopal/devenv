@@ -1,0 +1,4 @@
+#!/bin/bash -xe
+
+docker rm -f portainer jenkins nginx
+

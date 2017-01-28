@@ -1,0 +1,6 @@
+#!/bin/bash -xe
+
+docker run --restart always --network cdci --ip 172.99.15.2 --name portainer --privileged -d -v /docker/portainer/data:/data -v /var/run/docker.sock:/var/run/docker.sock portainer/portainer
+docker run --restart always --network cdci --ip 172.99.15.3 --name jenkins --privileged --group-add 989 -v /docker/jenkins/var/jenkins_home:/var/jenkins_home -v /docker/jenkins/backup:/backup -v /var/run/docker.sock:/var/run/docker.sock -v /usr/bin/docker:/usr/bin/docker:ro -v /etc/docker/key.json:/etc/docker/key.json:ro -d jenkins --prefix=/jenkins
+docker run --restart always --network cdci --ip 172.99.15.100 --name nginx -p 443:443 -v /docker/nginx/etc/nginx/conf.d:/etc/nginx/conf.d:ro -v /docker/letsencrypt/etc/letsencrypt:/etc/letsencrypt:ro -d nginx
+

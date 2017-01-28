@@ -1,0 +1,22 @@
+#!/bin/bash -xe
+
+if [ "$1" == "" ]; then
+	echo "Run as $0 <domain_name>"
+	exit 1
+fi
+
+export DOMAIN_NAME="$1"
+
+apt -y update && apt -y upgrade && apt -y install docker.io
+sed -e 's#$DOMAIN_NAME#'"${DOMAIN_NAME}"'#g' < nginx/etc/nginx/conf.d/main.conf.template > nginx/etc/nginx/conf.d/main.conf
+
+if [ -d "/docker/letsencrypt/etc/letsencrypt/archive/corylus-slave.do.kubs.info" ]; then
+  docker run --rm -t -i -p 443:443 -v /docker/letsencrypt/etc/letsencrypt:/etc/letsencrypt gzm55/certbot renew
+else
+  docker run --rm -t -i -p 443:443 -v /docker/letsencrypt/etc/letsencrypt:/etc/letsencrypt gzm55/certbot certonly --standalone --preferred-challenges=tls-sni-01 -d ${DOMAIN_NAME} 
+fi
+
+docker network rm cdci || true
+docker network create --subnet 172.99.15.0/24 --ip-range 172.99.15.128/25 cdci
+chown -R 1000 jenkins
+

@@ -1,0 +1,43 @@
+
+server {
+    listen       443 ssl http2 default_server;
+    listen       [::]:443 ssl http2 default_server;
+    server_name  "$DOMAIN_NAME";
+    root         /www;
+
+    ssl_certificate "/etc/letsencrypt/live/$DOMAIN_NAME/fullchain.pem";
+    ssl_certificate_key "/etc/letsencrypt/live/$DOMAIN_NAME/privkey.pem";
+    ssl_session_cache shared:SSL:1m;
+    ssl_session_timeout  10m;
+    ssl_ciphers HIGH:!aNULL:!MD5;
+    ssl_prefer_server_ciphers on;
+
+    location / {
+    }
+
+    location /portainer/ {
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        proxy_pass http://portainer:9000/;
+    }
+
+    location /portainer/api/websocket/ {
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_http_version 1.1;
+        proxy_pass http://portainer:9000/api/websocket/;
+    }
+
+    location /jenkins/ {
+        proxy_pass http://jenkins:8080/jenkins/;
+    }
+
+    error_page 404 /404.html;
+        location = /40x.html {
+    }
+
+    error_page 500 502 503 504 /50x.html;
+        location = /50x.html {
+    }
+}
+
